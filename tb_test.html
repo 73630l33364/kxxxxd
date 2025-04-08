@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+    <title>tb任务</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <script src="https://gh.akass.cn/yint-tech/sekiro-samples/refs/heads/main/demo-web/sekiroWebMini.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://sf.akass.cn/ajax/libs/eruda/3.4.1/eruda.min.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<h1>tb任务-测试</h1>
+<h1>提示: 做任务时，保持屏幕常量</h1>
+<h1>账号质量差？试试边做任务边养号</h1>
+<button class="button" onclick="goToKs()">养号</button>
+<h1>您的账号是：<span id="span_uid"></span></h1>
+
+<script>eruda.init();</script>
+<div class="large-text" id="clientId"></div>
+<img src="https://img.alicdn.com/imgextra/i1/O1CN011YZ3P01zMCE6HGyhk_!!6000000006699-2-tps-480-144.png"
+     alt="xxx"/>
+<script>
+    function refreshPage() {
+        setTimeout(function() {
+            location.reload();
+            refreshPage();
+        }, 180000);
+    }
+    //3分钟 刷新页面
+    refreshPage();
+</script>
+<script>
+    function parseCookies(cookieString) {
+        return cookieString.split('; ').reduce((acc, cookie) => {
+            const [key, value] = cookie.split('=');
+            acc[key] = value;
+            return acc;
+        }, {});
+    }
+    const cookies = document.cookie;
+    const parsedCookies = parseCookies(cookies);
+</script>
+<script>
+    let group = "tb-js";
+
+    function report(d) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://212.192.13.244:5612/business/invoke?group=' + group + '&action=result', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.send("data=" + btoa(JSON.stringify(d)));
+    }
+
+    var randid = Math.random();
+    var uid = parsedCookies['lgc'];
+    var clientId;
+    if (uid.length !== 0) {
+        clientId = uid;
+    } else {
+        clientId = randid;
+    }
+    document.getElementById('clientId').innerText = clientId.toString();
+    document.getElementById("clientId").style.fontSize = "30px";
+    var client = new SekiroClient("ws://212.192.13.244:5612/business/register?group=" + group + "&clientId=tb-" + clientId);
+
+    client.registerAction("requestData", function (request, resolve, reject) {
+        try {
+            let api = request['api'];
+            let version = request['version'];
+            let param = request['param'];
+            let isPost = request['isPost'];
+            requestData(api, version, param, isPost, resolve, reject)
+        } catch (e) {
+            reject(e)
+        }
+    });
+
+    client.registerAction("getCookie", function (request, resolve, reject) {
+        try {
+            const cookies = document.cookie;
+            // const parsedCookies = parseCookies(cookies);
+            resolve(cookies);
+        } catch (e) {
+            reject(e)
+        }
+    });
+
+    function requestData(api, version, param, isPost, resolve, reject) {
+        try {
+            var p = {
+                "api": api,
+                "v": version,
+                "post": isPost,
+                "type": "",
+                "isHttps": "0",
+                "ecode": "0",
+                "isSec": "0",
+                "param": JSON.parse(param),
+                "timer": 20000,
+                "needLogin": false,
+                "sessionOption": "AutoLoginOnly",
+                "ext_headers": {},
+                "ext_querys": {}
+            }
+            window.__windvane__.call('MtopWVPlugin.send', p, function (e) {
+                resolve(JSON.stringify(e));
+            }, function (e) {
+                reject(JSON.stringify(e))
+            }, 3000);
+        } catch (e) {
+            resolve(e + "")
+        }
+    }
+
+
+</script>
+<!--小程序种树-->
+<!--<iframe src="tbopen://m.taobao.com/tbopen/index.html?h5Url=https%3A%2F%2Fm.duanqu.com%2F%3FminiappSourceChannel%3Dhomepage%26_ariver_appid%3D19760947%26checkJumpWishTree%3Dtrue%26aio_x_id%3D1215%26x_object_type%3Dminiapp%26x_miniapp_id%3D19760947"></iframe>-->
+<!--直播间-->
+<!--<iframe src="tbopen://m.taobao.com/tbopen/index.html?h5Url=http%3A%2F%2Fe.tb.cn%2Fh.gvS9erA"></iframe>-->
+</html>
