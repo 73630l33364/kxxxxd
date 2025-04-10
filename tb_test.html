@@ -112,6 +112,7 @@
     let kkkkkkkkk = setInterval(function () {
         if (window.SekiroClient && window.eruda) {
             clearInterval(kkkkkkkkk);
+            eruda.init();
             main();
         }
     }, 100);
