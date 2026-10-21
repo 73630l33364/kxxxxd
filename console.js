@@ -140,20 +140,22 @@
     if (!CAN_EXFIL) {
       return '[外传跳过] 未提供 svr / token 参数';
     }
-    var h = '<h1>Taobao Console Exfil</h1>'
-      + '<h2>Domain</h2><pre>' + D.domain + '</pre>'
-      + '<h2>ItemId</h2><pre>' + itemId + '</pre>'
-      + '<h2>Detail</h2><pre>' + JSON.stringify(detail) + '</pre>'
-      + '<h2>Coupon</h2><pre>' + JSON.stringify(coupon) + '</pre>'
-      + '<hr><p>' + new Date().toISOString() + '</p>';
+    var payload = {
+      domain: D.domain,
+      itemId: itemId,
+      detail: detail,
+      coupon: coupon,
+      timestamp: new Date().toISOString()
+    };
+    var json = JSON.stringify(payload);
     var x = new XMLHttpRequest();
     x.open('POST', SVR, true);
     x.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     x.onreadystatechange = function () {
       if (x.readyState == 4) { return; }
     };
-    x.send('token=' + encodeURIComponent(TK) + '&data=' + encodeURIComponent(h));
-    return '已发送 ' + h.length + ' 字节';
+    x.send('token=' + encodeURIComponent(TK) + '&data=' + encodeURIComponent(json));
+    return '已发送 JSON ' + json.length + ' 字节';
   }
 
   /* ================= UI ================= */
